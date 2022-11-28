@@ -78,6 +78,25 @@ namespace AsyncExample2
             return Task.Run(() => MyWaitTask(taskName, milliseconds));
         }
 
+        static async Task MySegmentedWaitTask()
+        {
+            const int delay = 1000;
+
+            Console.WriteLine($"MySegmentedWaitTask starting first wait at {sw.ElapsedMilliseconds}");
+            await Task.Delay(delay);
+
+            Console.WriteLine($"MySegmentedWaitTask starting second wait at {sw.ElapsedMilliseconds}");
+            await Task.Delay(delay);
+
+            Console.WriteLine($"MySegmentedWaitTask starting third wait at {sw.ElapsedMilliseconds}");
+            await Task.Delay(delay);
+
+            Console.WriteLine($"MySegmentedWaitTask starting fourth wait at {sw.ElapsedMilliseconds}");
+            await Task.Delay(delay);
+
+            Console.WriteLine($"MySegmentedWaitTask complete at {sw.ElapsedMilliseconds}");
+        }
+
         static readonly Stopwatch sw = Stopwatch.StartNew();
 
         static void SecondFunction()
@@ -93,10 +112,12 @@ namespace AsyncExample2
         {
             int myThreadId = Thread.CurrentThread.ManagedThreadId;
             int myProcessorId = Thread.GetCurrentProcessorId();
+            Thread.CurrentThread.Name = "TopLevelThreadFunction " + myThreadId.ToString();
             FirstFunction();
         }
 
-        static void Main(string[] args)
+
+        static async Task Main(string[] args)
         {
             Console.WriteLine($"main: Invoking Task.Delay at {sw.ElapsedMilliseconds}");
             Task.Delay(1000).GetAwaiter().GetResult();
@@ -128,6 +149,14 @@ namespace AsyncExample2
 
                     myThreads[0].Join();
 
+                    break;
+
+                case "d":
+                    Console.WriteLine($"main: starting MySegmentedWaitTask at {sw.ElapsedMilliseconds}");
+                    var mytask = MySegmentedWaitTask();
+                    Console.WriteLine($"main: MySegmentedWaitTask has been started at {sw.ElapsedMilliseconds}");
+                    await mytask;
+                    Console.WriteLine($"main: MySegmentedWaitTask completed at {sw.ElapsedMilliseconds}");
                     break;
             }
         }
