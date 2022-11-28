@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AsyncExample2": {
+      "commandName": "Project",
+      "commandLineArgs": "b"
+    }
+  }
+}
