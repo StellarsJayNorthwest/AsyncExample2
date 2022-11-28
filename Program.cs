@@ -80,21 +80,25 @@ namespace AsyncExample2
 
         static async Task MySegmentedWaitTask()
         {
-            const int delay = 1000;
+            const int delay = 10000;
+            List<Task> someTasks = new();
 
             Console.WriteLine($"MySegmentedWaitTask starting first wait at {sw.ElapsedMilliseconds}");
-            await Task.Delay(delay);
+            someTasks.Add(Task.Delay(delay));
 
             Console.WriteLine($"MySegmentedWaitTask starting second wait at {sw.ElapsedMilliseconds}");
-            await Task.Delay(delay);
+            someTasks.Add(Task.Delay(delay));
 
             Console.WriteLine($"MySegmentedWaitTask starting third wait at {sw.ElapsedMilliseconds}");
-            await Task.Delay(delay);
+            someTasks.Add(Task.Delay(delay));
 
             Console.WriteLine($"MySegmentedWaitTask starting fourth wait at {sw.ElapsedMilliseconds}");
-            await Task.Delay(delay);
+            someTasks.Add(Task.Delay(delay));
 
-            Console.WriteLine($"MySegmentedWaitTask complete at {sw.ElapsedMilliseconds}");
+            Console.WriteLine($"MySegmentedWaitTask waiting for tasks to complete at {sw.ElapsedMilliseconds}");
+            await Task.WhenAll(someTasks.ToArray());
+
+            Console.WriteLine($"MySegmentedWaitTask all tasks complete at {sw.ElapsedMilliseconds}");
         }
 
         static readonly Stopwatch sw = Stopwatch.StartNew();
