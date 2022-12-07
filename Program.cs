@@ -147,10 +147,38 @@ namespace AsyncExample2
             FirstFunction();
         }
 
+        static async Task<int> ReadIntegerFromDatabase()
+        {
+            /* .... */
+            await Task.Delay(10000);
+            return 42000;
+        }
+        static async Task<int> ReadIntegerFromDatabase2()
+        {
+            /* .... */
+            await Task.Delay(10000);
+            return 42000;
+        }
+
         static async Task Main(string[] args)
         {
+            Console.WriteLine($"main: About to read integer at {sw.ElapsedMilliseconds}");
+            var myTask = ReadIntegerFromDatabase();
+            var myTask2 = ReadIntegerFromDatabase2();
+            Console.WriteLine($"main: read integer returned at {sw.ElapsedMilliseconds}");
+            await myTask;
+            await myTask2;
+            Console.WriteLine($"main: await completed at {sw.ElapsedMilliseconds}");
+            int x = myTask.Result;
+            int y = myTask2.Result;
+            return;
+
+
+
             Console.WriteLine($"main: Invoking Task.Delay at {sw.ElapsedMilliseconds}");
-            Task.Delay(1000).GetAwaiter().GetResult();
+            var a = Task.Delay(1000);
+            Console.WriteLine($"main: executing at {sw.ElapsedMilliseconds}");
+            await a;
             Console.WriteLine($"main: one second Task.Delay completed at {sw.ElapsedMilliseconds}");
 
             switch (args[0])
@@ -164,8 +192,10 @@ namespace AsyncExample2
                     myTasks.Add(CreateWaitTask("A", 3000));
                     myTasks.Add(CreateWaitTask("B", 4000));
                     myTasks.Add(CreateWaitTask("C", 5000));
+
                     Thread.Sleep(1000);
-                    Task.WhenAll(myTasks).GetAwaiter().GetResult();
+
+                    await Task.WhenAll(myTasks);
                     Console.WriteLine($"All tasks complete at {sw.ElapsedMilliseconds}");
                     break;
 
