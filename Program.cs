@@ -101,6 +101,33 @@ namespace AsyncExample2
             Console.WriteLine($"MySegmentedWaitTask all tasks complete at {sw.ElapsedMilliseconds}");
         }
 
+        static async Task MyNestedWaitTask2()
+        {
+            Console.WriteLine($"MyNestedWaitTask2 starting nested task at {sw.ElapsedMilliseconds}");
+
+#if false
+            for (int i = 0; i < int.MaxnValue; ++i)
+            {
+                Console.WriteLine($"MyNestedWaitTask2 looping at {sw.ElapsedMilliseconds}");
+                Thread.Sleep(1000);
+            }
+#endif
+
+            await Task.Delay(int.MaxValue);
+        }
+
+        static async Task MyNestedWaitTask1()
+        {
+            Console.WriteLine($"MyNestedWaitTask1 starting nested task at {sw.ElapsedMilliseconds}");
+            await MyNestedWaitTask2();
+        }
+
+        static async Task MyNestedWaitTask()
+        {
+            Console.WriteLine($"MyNestedWaitTask starting nested task at {sw.ElapsedMilliseconds}");
+            await MyNestedWaitTask1();
+        }
+
         static readonly Stopwatch sw = Stopwatch.StartNew();
 
         static void SecondFunction()
@@ -160,6 +187,11 @@ namespace AsyncExample2
                     Console.WriteLine($"main: MySegmentedWaitTask has been started at {sw.ElapsedMilliseconds}");
                     await mytask;
                     Console.WriteLine($"main: MySegmentedWaitTask completed at {sw.ElapsedMilliseconds}");
+                    break;
+
+                case "e":
+                    Console.WriteLine($"main: starting MyNestedWaitTask at {sw.ElapsedMilliseconds}");
+                    await MyNestedWaitTask();
                     break;
             }
         }
