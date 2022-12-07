@@ -120,7 +120,6 @@ namespace AsyncExample2
             FirstFunction();
         }
 
-
         static async Task Main(string[] args)
         {
             Console.WriteLine($"main: Invoking Task.Delay at {sw.ElapsedMilliseconds}");
